@@ -1,6 +1,6 @@
 {
   "name": "iframe-communicator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Communicate between two iframes to run scripts synchronously.",
   "main": "index.js",
   "directories": {
