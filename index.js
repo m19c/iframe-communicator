@@ -23,17 +23,19 @@
       var item;
 
       for (index = 0; index < window.parent.frames.length; index++) {
-        item = window.parent.frames[index];
+        try {
+          item = window.parent.frames[index];
 
-        if (!item) {
-          continue;
-        }
+          if (!item) {
+            continue;
+          }
 
-        if (id === item._icid) {
-          callback(item);
-          clearInterval(interval);
-          break;
-        }
+          if (id === item._icid) {
+            callback(item);
+            clearInterval(interval);
+            break;
+          }
+        } catch (err) {}
       }
     }, options.interval);
 

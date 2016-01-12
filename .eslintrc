@@ -21,6 +21,7 @@
     "no-param-reassign": 0,
     "spaced-line-comment": 0,
     "react/prop-types": 1,
-    "react/jsx-boolean-value": 0
+    "react/jsx-boolean-value": 0,
+    "no-empty": 1
   }
 }
