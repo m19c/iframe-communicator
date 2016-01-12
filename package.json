@@ -1,0 +1,36 @@
+{
+  "name": "iframe-communicator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MrBoolean/iframe-communicator.git"
+  },
+  "keywords": [
+    "iframe",
+    "communication",
+    "master",
+    "slave"
+  ],
+  "author": "Marc Binder <marcandrebinder@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MrBoolean/iframe-communicator/issues"
+  },
+  "homepage": "https://github.com/MrBoolean/iframe-communicator#readme",
+  "devDependencies": {
+    "babel-eslint": "^4.1.6",
+    "eslint": "^1.10.3",
+    "eslint-config-airbnb": "^3.1.0",
+    "eslint-plugin-react": "^3.15.0",
+    "gulp": "^3.9.0",
+    "gulp-eslint": "^1.1.1"
+  }
+}
