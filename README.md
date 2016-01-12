@@ -12,12 +12,12 @@ Communicate between two iframes to run scripts synchronously.
 ```
 
 ## API
-### `setId`
+### `setId(id)`
 ```javascript
 ic.setId('iframe-a');
 ```
 
-### `waitFor`
+### `waitFor(id, callback[, options])`
 ```javascript
 ic.waitFor('iframe-a', function() {
   console.log('iframe-a found');
