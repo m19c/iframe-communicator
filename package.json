@@ -17,7 +17,10 @@
     "iframe",
     "communication",
     "master",
-    "slave"
+    "slave",
+    "LocalConnection",
+    "flash",
+    "replacement"
   ],
   "author": "Marc Binder <marcandrebinder@gmail.com>",
   "license": "MIT",
