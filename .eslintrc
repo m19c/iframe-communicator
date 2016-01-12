@@ -15,6 +15,7 @@
     "no-var": 0,
     "comma-dangle": [2, "never"],
     "no-space-before-semi": 0,
+    "space-before-function-paren": 0,
     "space-after-function-name": 0,
     "semi-spacing": [2, { "before": false, "after": true }],
     "no-param-reassign": 0,

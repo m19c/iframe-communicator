@@ -6,6 +6,11 @@ Communicate between two iframes to run scripts synchronously.
 - Fast
 - Easy to use
 
+## Usage
+```html
+<script src="path/to/iframe-communicator/dist/ic.min.js"></script>
+```
+
 ## API
 ### `setId`
 ```javascript
@@ -27,15 +32,20 @@ ic.waitFor('iframe-a', function() {
 <script>
   (function() {
     var waitInterval;
+    var waitTimeout;
 
     function run(windowB) {
+      if (waitTimeout) {
+        clearTimeout(waitTimeout);
+      }
+
       // ...
     }
 
     ic.setId('a');
     waitInterval = ic.waitFor('b', run);
 
-    setTimeout(function() {
+    waitTimeout = setTimeout(function() {
       clearInterval(waitInterval);
       run(null);
     }, 5000);

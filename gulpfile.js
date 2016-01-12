@@ -7,8 +7,10 @@ const del = require('del');
 
 gulp.task('lint', () => {
   return gulp
-    .src(['index.js', 'example/**/*.js'])
-    .pipe(eslint())
+    .src(['index.js', 'example/**/*.js', '!example/ic.js'])
+    .pipe(eslint({
+      configFile: `${__dirname}/.eslintrc`
+    }))
     .pipe(eslint.format())
     .pipe(eslint.failAfterError())
   ;
