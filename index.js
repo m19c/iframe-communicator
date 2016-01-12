@@ -1,75 +1,42 @@
-var isArray = (Array.isArray) ? Array.isArray : null;
-var indexOf = (Array.indexOf) ? Array.indexOf : null;
-var ic = {};
-
-if (!isArray) {
-  isArray = function isArrayPolyfill(value) {
-    return Object.prototype.toString.call(value) === '[object Array]';
+(function() {
+  var defaults = {
+    interval: 25
   };
-}
 
-if (!indexOf) {
-  indexOf = function indexOfPolyfill(data, search) {
-    var index = 0;
-    var object;
-    var length;
+  window.ic = window.ic || {};
 
-    if (data === null && !data) {
-      throw new TypeError('"data" is null or not defined');
-    }
-
-    object = Object(this);
-    length = object.length >>> 0;
-
-    if (length === 0) {
-      return -1;
-    }
-
-    while (index < length) {
-      if (index in object && object[index] === search) {
-        return index;
-      }
-
-      index++;
-    }
-
-    return -1;
+  window.ic.setId = function setId(id) {
+    window._icid = id;
   };
-}
 
-ic.setId = function setId(id) {
-  window._icid = id;
-};
+  window.ic.waitFor = function waitFor(id, callback, options) {
+    var interval;
 
-ic.waitFor = function waitFor(ids, callback, options) {
-  var interval;
+    options = options || defaults;
 
-  ids = (!isArray(ids)) ? [ids] : ids;
-
-  if (!window && !window.parent && !window.parent.frames) {
-    return callback(null);
-  }
-
-  interval = setInterval(function icWaitForInterval() {
-    var index;
-    var item;
-
-    for (index = 0; index < window.parent.frames.length; index++) {
-      item = window.parent.frames[index];
-
-      if (!item) {
-        continue;
-      }
-
-      if (indexOf(ids, item._icid)) {
-        callback(item);
-        clearInterval(interval);
-        break;
-      }
+    if (!window && !window.parent && !window.parent.frames) {
+      return callback(null);
     }
-  }, options.interval);
 
-  return interval;
-};
+    interval = setInterval(function icWaitForInterval() {
+      var index;
+      var item;
 
-export default ic;
+      for (index = 0; index < window.parent.frames.length; index++) {
+        item = window.parent.frames[index];
+
+        if (!item) {
+          continue;
+        }
+
+        if (id === item._icid) {
+          callback(item);
+          clearInterval(interval);
+          break;
+        }
+      }
+    }, options.interval);
+
+    return interval;
+  };
+})();

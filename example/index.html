@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>iframe-communicator</title>
+  </head>
+  <body>
+    <iframe src="first.html"></iframe>
+    <script>
+      var loadTimeout = Math.floor(Math.random() * 2500) + 1;
+
+      console.log('wait for', loadTimeout);
+
+      setTimeout(function() {
+        var iframe = document.createElement('iframe');
+        iframe.src = 'second.html';
+        document.body.appendChild(iframe);
+      }, loadTimeout);
+    </script>
+  </body>
+</html>
