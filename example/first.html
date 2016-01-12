@@ -1,0 +1,45 @@
+<div class="container">first</div>
+<a id="toggle" style="display: none;">start/stop player</a>
+
+<script src="/ic.js"></script>
+<script src="/player.js"></script>
+<script>
+  (function() {
+    var timeout;
+    var interval;
+
+    function execWaitFor(second) {
+      var isRunning = false;
+      var toggler;
+
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+
+      function toggle() {
+        var method = (isRunning) ? 'stop' : 'play';
+
+        window[method]();
+        second[method]();
+
+        isRunning = !isRunning;
+      }
+
+      toggle();
+
+      toggler = document.getElementById('toggle');
+      toggler.addEventListener('click', function() {
+        toggle();
+      });
+      toggler.style.display = 'block';
+    }
+
+    ic.setId('first');
+    interval = ic.waitFor('second', execWaitFor);
+
+    timeout = setTimeout(function() {
+      clearInterval(interval);
+      window.play();
+    }, 2000);
+  })();
+</script>
