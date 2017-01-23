@@ -1,0 +1,15 @@
+<div class="container"></div>
+
+<script src="/ic.js"></script>
+<script>
+  (() => {
+    const IFrameCommunicator = window.IFrameCommunicator['default'];
+    const handler = new IFrameCommunicator('frame_b', ['frame_a']);
+
+    handler.on('ready', () => {
+      document.querySelector('.container').innerHTML = 'B';
+    });
+
+    handler.register();
+  })();
+</script>

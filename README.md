@@ -1,8 +1,7 @@
 # iframe-communicator
-Communicate between two iframes to run scripts synchronously.
+Communicate between two or more iframes to run scripts synchronously.
 
 ## Goals
-- < 1kb
 - Fast
 - Easy to use
 

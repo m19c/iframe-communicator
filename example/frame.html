@@ -1,0 +1,7 @@
+<script src="/util.js"></script>
+<script>
+  (() => {
+    callDelayed(() => addIFrame(document, { src: '/frame_a.html', width: '300px', height: '300px' }));
+    callDelayed(() => addIFrame(document, { src: '/frame_b.html', width: '300px', height: '300px' }));
+  })();
+</script>
