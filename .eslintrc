@@ -4,6 +4,7 @@
     "node": true
   },
   "globals": {
+    "window": true,
     "jest": true,
     "test": true,
     "expect": true,

@@ -5,7 +5,7 @@ describe('IFrameCommunicator', () => {
     it('it stores the given properties', () => {
       const com = new IFrameCommunicator('jon', ['d', 'o', 'e']);
       expect(com.id).toBe('jon');
-      expect(com.deps).toEqual(['d', 'o', 'e']);
+      expect(com.remainingDeps).toEqual(['d', 'o', 'e']);
     });
   });
 

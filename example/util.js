@@ -1,3 +1,13 @@
+function startTimer(node) {
+  const STEP = 1000;
+  let current = 0;
+
+  setInterval(() => {
+    current += STEP;
+    node.innerHTML = current;
+  }, STEP);
+}
+
 function addIFrame(doc, { src, width = '100%', height = '300px' }) {
   const item = doc.createElement('iframe');
 

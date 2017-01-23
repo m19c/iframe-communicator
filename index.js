@@ -14,11 +14,24 @@ function fromJSON(value) {
   }
 }
 
+/**
+ * @class IFrameCommunicator
+ * @example
+ * ```
+ * const com = new IFrameCommunicator();
+ * com.on('ready', () => document.querySelector('root').style.backgroundColor = 'blue');
+ * com.ready();
+ * ```
+ */
 export default class IFrameCommunicator {
 
-  constructor(id, deps) {
+  /**
+   * @param {string} id
+   * @param {array} initialDeps
+   */
+  constructor(id, initialDeps) {
     this.id = id;
-    this.deps = deps;
+    this.remainingDeps = initialDeps;
     this.listeners = {};
 
     const eventListenerName = ('addEventListener' in window) ? 'addEventListener' : 'attachEvent';
@@ -37,17 +50,22 @@ export default class IFrameCommunicator {
         }), '*');
       }
 
-      const index = this.deps.indexOf(data.id);
+      const index = this.remainingDeps.indexOf(data.id);
       if (index >= 0) {
-        this.deps.splice(index, 1);
+        this.remainingDeps.splice(index, 1);
 
-        if (this.deps.length === 0) {
+        if (this.remainingDeps.length === 0) {
           this.fire('ready');
         }
       }
     });
   }
 
+  /**
+   * @param {string} name
+   * @param {function} callback
+   * @return {IFrameCommunicator}
+   */
   on(name, callback) {
     this.listeners[name] = this.listeners[name] || [];
     this.listeners[name].push(callback);
@@ -55,6 +73,11 @@ export default class IFrameCommunicator {
     return this;
   }
 
+  /**
+   * @param {string} name
+   * @param {...mixed} args
+   * @return {boolean}
+   */
   fire(name, ...args) {
     if (!this.listeners[name]) {
       return false;
@@ -66,14 +89,24 @@ export default class IFrameCommunicator {
     return true;
   }
 
-  ready(currentWindow = window.top) {
-    for (let i = 0; i < currentWindow.frames.length; i++) {
-      if (currentWindow.frames[i] !== window) {
-        currentWindow.frames[i].postMessage(toJSON({ type: 'ping', id: this.id }), '*');
-      }
+  /**
+   * Sends a "message" event with the `type` `ping` to all `window.frames` and
+   * thier frames, and so on...
+   *
+   * @return {void}
+   */
+  ready() {
+    const bubble = (currentWindow = window.top) => {
+      for (let index = 0; index < currentWindow.frames.length; index + 1) {
+        if (currentWindow.frames[index] !== window) {
+          currentWindow.frames[index].postMessage(toJSON({ type: 'ping', id: this.id }), '*');
+        }
 
-      this.ready(currentWindow.frames[i]);
-    }
+        bubble(currentWindow.frames[index]);
+      }
+    };
+
+    bubble();
   }
 
 }
