@@ -6,58 +6,31 @@ Communicate between two or more iframes to run scripts synchronously.
 - Easy to use
 
 ## Usage
+
+### ES6
+```javascript
+import IFrameCommunicator from 'iframe-communicator';
+
+const com = new IFrameCommunicator('my_id', ['fizz', 'buzz']);
+com.on('ready', () => {
+  // do something...
+});
+com.register();
+```
+
+### ES5
+
 ```html
 <script src="path/to/iframe-communicator/dist/ic.min.js"></script>
-```
-
-## API
-### `setId(id)`
-```javascript
-ic.setId('iframe-a');
-```
-
-### `waitFor(id, callback[, options])`
-```javascript
-ic.waitFor('iframe-a', function() {
-  console.log('iframe-a found');
-});
-```
-
-## Best practice
-### Timeout after X ms
-**`frame-a.html` (master)**
-```html
-<script src="path/to/ic.js"></script>
 <script>
   (function() {
-    var waitInterval;
-    var waitTimeout;
+    var Communicator = window.IFrameCommunicator['default'];
+    var com = new Communicator('my_id', ['fizz', 'buzz']);
 
-    function run(windowB) {
-      if (waitTimeout) {
-        clearTimeout(waitTimeout);
-      }
-
-      // ...
-    }
-
-    ic.setId('a');
-    waitInterval = ic.waitFor('b', run);
-
-    waitTimeout = setTimeout(function() {
-      clearInterval(waitInterval);
-      run(null);
-    }, 5000);
-  })();
-</script>
-```
-
-**`frame-b.html` (slave)**
-```html
-<script src="path/to/ic.js"></script>
-<script>
-  (function() {
-    ic.setId('b');
+    com.on('ready', function() {
+      // do something...
+    });
+    com.register();
   })();
 </script>
 ```
