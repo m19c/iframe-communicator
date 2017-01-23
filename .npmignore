@@ -1,5 +1,9 @@
 example/
-test/
+coverage/
 .editorconfig
 .eslintrc
 .gitignore
+.yarnclean
+yarn.lock
+.babelrc
+index.test.js
