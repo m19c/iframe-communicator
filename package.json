@@ -7,7 +7,8 @@
     "test": "test"
   },
   "scripts": {
-    "test": "jest .",
+    "test": "jest",
+    "test:watch": "jest --watch",
     "build": "cross-env NODE_ENV=development yarn build:clean && yarn build:main && yarn build:minified",
     "build:clean": "del dist/*",
     "build:minified": "babel --minified index.js -o dist/ic.min.js",
@@ -46,6 +47,7 @@
     "eslint-plugin-jsx-a11y": "^3.0.2",
     "eslint-plugin-react": "^6.9.0",
     "jest": "^18.1.0",
+    "jest-cli": "^18.1.0",
     "karma": "^0.13.19",
     "karma-mocha": "^0.2.1",
     "live-server": "^1.2.0",
@@ -53,13 +55,7 @@
   },
   "jest": {
     "verbose": true,
-    "coverageThreshold": {
-      "global": {
-        "branches": 50,
-        "functions": 50,
-        "lines": 50,
-        "statements": 50
-      }
-    }
+    "collectCoverage": true,
+    "coverageReporters": ["text"]
   }
 }

@@ -4,7 +4,7 @@
 <script>
   (() => {
     const IFrameCommunicator = window.IFrameCommunicator['default'];
-    const handler = new IFrameCommunicator('frame_b', ['frame_a']);
+    const handler = new IFrameCommunicator('frame_b', ['frame_a', 'frame_c']);
 
     handler.on('ready', () => {
       document.querySelector('.container').innerHTML = 'B';

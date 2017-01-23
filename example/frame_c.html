@@ -4,10 +4,10 @@
 <script>
   (() => {
     const IFrameCommunicator = window.IFrameCommunicator['default'];
-    const handler = new IFrameCommunicator('frame_a', ['frame_b', 'frame_c']);
+    const handler = new IFrameCommunicator('frame_c', ['frame_a', 'frame_b']);
 
     handler.on('ready', () => {
-      document.querySelector('.container').innerHTML = 'A';
+      document.querySelector('.container').innerHTML = 'C';
     });
 
     handler.register();
