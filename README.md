@@ -15,7 +15,7 @@ const com = new IFrameCommunicator('my_id', ['fizz', 'buzz']);
 com.on('ready', () => {
   // do something...
 });
-com.register();
+com.ready();
 ```
 
 ### ES5
@@ -30,7 +30,7 @@ com.register();
     com.on('ready', function() {
       // do something...
     });
-    com.register();
+    com.ready();
   })();
 </script>
 ```
