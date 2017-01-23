@@ -57,14 +57,29 @@
     }
   }
 
+  /**
+   * @class IFrameCommunicator
+   * @example
+   * ```
+   * const com = new IFrameCommunicator();
+   * com.on('ready', () => document.querySelector('root').style.backgroundColor = 'blue');
+   * com.ready();
+   * ```
+   */
+
   var IFrameCommunicator = function () {
-    function IFrameCommunicator(id, deps) {
+
+    /**
+     * @param {string} id
+     * @param {array} initialDeps
+     */
+    function IFrameCommunicator(id, initialDeps) {
       var _this = this;
 
       _classCallCheck(this, IFrameCommunicator);
 
       this.id = id;
-      this.deps = deps;
+      this.remainingDeps = initialDeps;
       this.listeners = {};
 
       var eventListenerName = 'addEventListener' in window ? 'addEventListener' : 'attachEvent';
@@ -83,16 +98,23 @@
           }), '*');
         }
 
-        var index = _this.deps.indexOf(data.id);
+        var index = _this.remainingDeps.indexOf(data.id);
         if (index >= 0) {
-          _this.deps.splice(index, 1);
+          _this.remainingDeps.splice(index, 1);
 
-          if (_this.deps.length === 0) {
+          if (_this.remainingDeps.length === 0) {
             _this.fire('ready');
           }
         }
       });
     }
+
+    /**
+     * @param {string} name
+     * @param {function} callback
+     * @return {IFrameCommunicator}
+     */
+
 
     _createClass(IFrameCommunicator, [{
       key: 'on',
@@ -121,15 +143,21 @@
     }, {
       key: 'ready',
       value: function ready() {
-        var currentWindow = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : window.top;
+        var _this2 = this;
 
-        for (var i = 0; i < currentWindow.frames.length; i++) {
-          if (currentWindow.frames[i] !== window) {
-            currentWindow.frames[i].postMessage(toJSON({ type: 'ping', id: this.id }), '*');
+        var bubble = function bubble() {
+          var currentWindow = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : window.top;
+
+          for (var index = 0; index < currentWindow.frames.length; index + 1) {
+            if (currentWindow.frames[index] !== window) {
+              currentWindow.frames[index].postMessage(toJSON({ type: 'ping', id: _this2.id }), '*');
+            }
+
+            bubble(currentWindow.frames[index]);
           }
+        };
 
-          this.ready(currentWindow.frames[i]);
-        }
+        bubble();
       }
     }]);
 
