@@ -66,16 +66,8 @@
       this.id = id;
       this.deps = deps;
       this.listeners = {};
-      this.master = null;
 
       var eventListenerName = 'addEventListener' in window ? 'addEventListener' : 'attachEvent';
-
-      if (!this.master) {
-        this.master = window;
-        while (this.master.parent && this.master.parent !== this.master) {
-          this.master = this.master.parent;
-        }
-      }
 
       window[eventListenerName]('message', function (event) {
         if (!event || !event.data) {
@@ -84,56 +76,19 @@
 
         var data = fromJSON(event.data);
 
-        if (data.type !== 'ready') {
-          return;
+        if (data.type === 'ping') {
+          event.source.postMessage(toJSON({
+            type: 'pong',
+            id: _this.id
+          }), '*');
         }
 
-        _this.fire('ready', event, data);
-      });
+        var index = _this.deps.indexOf(data.id);
+        if (index >= 0) {
+          _this.deps.splice(index, 1);
 
-      var registered = {};
-      this.master.window[eventListenerName]('message', function (event) {
-        if (!event || !event.data) {
-          return;
-        }
-
-        var data = fromJSON(event.data);
-
-        if (data.type !== 'register') {
-          return;
-        }
-
-        registered[data.id] = data;
-        registered[data.id].window = event.source;
-
-        // register deps
-        if (data.deps && Array.isArray(data.deps)) {
-          data.deps.forEach(function (dep) {
-            if (!registered.hasOwnProperty(dep)) {
-              registered[dep] = false;
-            }
-          });
-        }
-
-        // check
-        for (var key in registered) {
-          if (!registered[key]) {
-            continue;
-          }
-
-          var item = registered[key];
-
-          if (!item || !item.deps) {
-            continue;
-          }
-
-          var isFulfilled = item.deps.filter(function (dep) {
-            return !!registered[dep];
-          }) // eslint-disable-line
-          .length === item.deps.length;
-
-          if (isFulfilled) {
-            item.window.postMessage(toJSON({ type: 'ready' }), '*');
+          if (_this.deps.length === 0) {
+            _this.fire('ready');
           }
         }
       });
@@ -164,9 +119,17 @@
         return true;
       }
     }, {
-      key: 'register',
-      value: function register() {
-        this.master.postMessage(toJSON({ type: 'register', id: this.id, deps: this.deps }), '*');
+      key: 'ready',
+      value: function ready() {
+        var currentWindow = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : window.top;
+
+        for (var i = 0; i < currentWindow.frames.length; i++) {
+          if (currentWindow.frames[i] !== window) {
+            currentWindow.frames[i].postMessage(toJSON({ type: 'ping', id: this.id }), '*');
+          }
+
+          this.ready(currentWindow.frames[i]);
+        }
       }
     }]);
 

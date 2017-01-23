@@ -20,16 +20,8 @@ export default class IFrameCommunicator {
     this.id = id;
     this.deps = deps;
     this.listeners = {};
-    this.master = null;
 
     const eventListenerName = ('addEventListener' in window) ? 'addEventListener' : 'attachEvent';
-
-    if (!this.master) {
-      this.master = window;
-      while (this.master.parent && this.master.parent !== this.master) {
-        this.master = this.master.parent;
-      }
-    }
 
     window[eventListenerName]('message', (event) => {
       if (!event || !event.data) {
@@ -38,56 +30,19 @@ export default class IFrameCommunicator {
 
       const data = fromJSON(event.data);
 
-      if (data.type !== 'ready') {
-        return;
+      if (data.type === 'ping') {
+        event.source.postMessage(toJSON({
+          type: 'pong',
+          id: this.id
+        }), '*');
       }
 
-      this.fire('ready', event, data);
-    });
+      const index = this.deps.indexOf(data.id);
+      if (index >= 0) {
+        this.deps.splice(index, 1);
 
-    const registered = {};
-    this.master.window[eventListenerName]('message', (event) => {
-      if (!event || !event.data) {
-        return;
-      }
-
-      const data = fromJSON(event.data);
-
-      if (data.type !== 'register') {
-        return;
-      }
-
-      registered[data.id] = data;
-      registered[data.id].window = event.source;
-
-      // register deps
-      if (data.deps && Array.isArray(data.deps)) {
-        data.deps.forEach((dep) => {
-          if (!registered.hasOwnProperty(dep)) {
-            registered[dep] = false;
-          }
-        });
-      }
-
-      // check
-      for (const key in registered) {
-        if (!registered[key]) {
-          continue;
-        }
-
-        const item = registered[key];
-
-        if (!item || !item.deps) {
-          continue;
-        }
-
-        const isFulfilled = item.deps
-          .filter((dep) => !!registered[dep]) // eslint-disable-line
-          .length === item.deps.length
-        ;
-
-        if (isFulfilled) {
-          item.window.postMessage(toJSON({ type: 'ready' }), '*');
+        if (this.deps.length === 0) {
+          this.fire('ready');
         }
       }
     });
@@ -111,8 +66,14 @@ export default class IFrameCommunicator {
     return true;
   }
 
-  register() {
-    this.master.postMessage(toJSON({ type: 'register', id: this.id, deps: this.deps }), '*');
+  ready(currentWindow = window.top) {
+    for (let i = 0; i < currentWindow.frames.length; i++) {
+      if (currentWindow.frames[i] !== window) {
+        currentWindow.frames[i].postMessage(toJSON({ type: 'ping', id: this.id }), '*');
+      }
+
+      this.ready(currentWindow.frames[i]);
+    }
   }
 
 }
