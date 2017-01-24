@@ -1,6 +1,6 @@
 {
   "name": "iframe-communicator",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Communicate between two iframes to run scripts synchronously.",
   "main": "index.js",
   "directories": {
@@ -12,7 +12,7 @@
     "test:watch": "jest --watch",
     "build": "cross-env NODE_ENV=development yarn build:clean && yarn build:main && yarn build:minified",
     "build:clean": "del dist/*",
-    "build:minified": "babel --minified index.js -o dist/ic.min.js",
+    "build:minified": "babel --minified --no-comments index.js -o dist/ic.min.js",
     "build:main": "babel index.js -o dist/ic.js",
     "example": "live-server example/"
   },
